@@ -1,30 +1,29 @@
-import os
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
+
 
 class Config(object):
     TESTING = False
-    SESSION_TYPE = 'filesystem'
-    SESSION_FILE_THRESHOLD = 50
-    PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
-    REMEMBER_COOKIE_DURATION = timedelta(hours=24)
-    DEBUG_TB_INTERCEPT_REDIRECTS = False
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev'
-    CUSTOMERS_PER_PAGE = 5
+    SCHEDULER_API_ENABLED = True
+
 
 class TestConfig(Config):
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'   # use an in-memory database for test
-    WTF_CSRF_ENABLED = False                # no CSRF during test
-    SESSION_FILE_THRESHOLD = 10
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+    SW_REVIEW_API_URL = os.environ.get('SW_RV_API_URL')
+    SW_CONFIRM_API_URL = os.environ.get('SW_CM_API_URL')
 
 
 class ProductionConfig(Config):
@@ -32,10 +31,11 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
+
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
     'testing': TestConfig,
-    'default': DevelopmentConfig
+    'default': DevelopmentConfig,
 }
 

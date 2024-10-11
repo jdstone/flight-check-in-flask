@@ -1,10 +1,11 @@
-import os
-from flask import Flask
-import requests
 from config import config
+from flask import Flask
+from flask_apscheduler import APScheduler
+import os
+import requests
 
 
-def create_app(config_class):
+def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
