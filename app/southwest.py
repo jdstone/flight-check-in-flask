@@ -9,7 +9,7 @@ first_name = ""
 last_name = ""
 
 @bp.post("/checkin")
-def checkin_review(conf_number="W632905", first_name="Jonathan", last_name="Stone"):
+def checkin_review(conf_number, first_name, last_name):
     sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review"
     api_url = current_app.config['SW_REVIEW_API_URL'] or sw_url
 
