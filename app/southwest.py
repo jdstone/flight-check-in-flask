@@ -1,14 +1,21 @@
-from flask import Blueprint, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app
+import logging
 import requests, json
 
 
 bp = Blueprint('southwest', __name__, url_prefix='/')
 
-conf_number = ""
-first_name = ""
-last_name = ""
 
 @bp.post("/checkin")
+def get_passenger_data():
+    if request.is_json:
+        data = request.get_json()
+        conf_number = data['conf_number']
+        first_name = data['first_name']
+        last_name = data['last_name']
+        return checkin_review(conf_number, first_name, last_name)
+    return {"error": "Request must be JSON"}, 415
+
 def checkin_review(conf_number, first_name, last_name):
     sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review"
     api_url = current_app.config['SW_REVIEW_API_URL'] or sw_url
@@ -77,4 +84,6 @@ def checkin_confirm(headers, response_review_data):
                 }
             json_data = json.dumps(data, indent=4)
             return json_data
+        return {"error": "Check-in was not successful"}
+    return {"error": "Check-in was not successful"}, 404
 
