@@ -5,18 +5,16 @@ import requests, json
 
 bp = Blueprint('southwest', __name__, url_prefix='/')
 
-conf_number = "W36784"
-first_name = "Jane"
-last_name = "Doe"
 
 @bp.post("/checkin")
-def get_data():
+def get_passenger_data():
     if request.is_json:
         data = request.get_json()
-        # conf_number = request.args.get
         conf_number = data['conf_number']
-        print(conf_number)
-        return data
+        first_name = data['first_name']
+        last_name = data['last_name']
+        return checkin_review(conf_number, first_name, last_name)
+    return {"error": "Request must be JSON"}, 415
 
 def checkin_review(conf_number, first_name, last_name):
     sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review"
