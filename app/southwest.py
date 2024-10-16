@@ -84,4 +84,6 @@ def checkin_confirm(headers, response_review_data):
                 }
             json_data = json.dumps(data, indent=4)
             return json_data
+        return {"error": "Check-in was not successful"}
+    return {"error": "Check-in was not successful"}, 404
 
