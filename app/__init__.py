@@ -26,10 +26,6 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
     except (KeyboardInterrupt, SystemExit):
         pass
 
-    # logger = logging.get_logger('apscheduler')
-    # logger.setLevel(logging.DEBUG)
-    # logging.getLogger("apscheduler").setLevel(logging.DEBUG)
-
     ###################################################
     #### Register Blueprints
     ###################################################
@@ -38,6 +34,18 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
     
     from . import checkin
     app.register_blueprint(checkin.bp)
+
+    ###################################################
+    #### Error Logging to File - For Production
+    ###################################################
+    logger = logging.getLogger(__name__)
+    if not app.debug and not app.testing:
+        logger.setLevel(logging.INFO)
+    elif app.debug or app.testing:
+        logger.setLevel(logging.DEBUG)
+    # logger = logging.get_logger('apscheduler')
+    # logger.setLevel(logging.DEBUG)
+    # logging.getLogger("apscheduler").setLevel(logging.DEBUG)
 
     return app
 
