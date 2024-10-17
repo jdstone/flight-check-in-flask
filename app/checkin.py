@@ -1,8 +1,9 @@
 from app import scheduler
 # from app.extensions import scheduler
 from datetime import datetime, timedelta
-from flask import Blueprint
-import app.southwest
+from flask import Blueprint, request, current_app
+import logging
+from app.southwest import checkin_review
 
 
 bp = Blueprint('checkin', __name__, url_prefix='/')
@@ -32,18 +33,37 @@ def my_job():
 
 
 @bp.post("/schedule-checkin")
+def get_passenger_data():
+    if request.is_json:
+        data = request.get_json()
+        flight_date = data['flight_date']
+        flight_time = data['flight_time']
+        conf_number = data['conf_number']
+        first_name = data['first_name']
+        last_name = data['last_name']
+        current_app.logger.warning("A warning message.")
+        # flight_date sent in format: MM/DD/YY
+        # flight_time sent in format: HH:MM:SS (seconds can be omitted)
+        return create_job(flight_date, flight_time, conf_number, first_name, last_name)
+
+    return {"error": "Request must be JSON"}, 415
+
 def create_job(flight_date, flight_time, conf_number, first_name, last_name):
     job_id = conf_number
     run_time = calculate_checkin_time(flight_date, flight_time)
     print(run_time)
+
     if not scheduler.get_job(job_id):
         scheduler.add_job(
             id=job_id,
-            func=app.southwest.checkin_review,
+            func=checkin_review,
             args=(conf_number, first_name, last_name),
             trigger="date",
             run_date=run_time
         )
+        return {"status": "Success"}
+
+    return {"error": f"{job_id} already exists"}
 
 def calculate_checkin_time(flight_date, flight_time):
     # concat date and time together
@@ -53,6 +73,4 @@ def calculate_checkin_time(flight_date, flight_time):
     checkin_datetime = checkin_datetime - timedelta(hours=23, minutes=59, seconds=55)
 
     return checkin_datetime
-
-# create_job('11/22/24', '13:45', 'W34322', 'Johnny', 'Appleseed')
 
