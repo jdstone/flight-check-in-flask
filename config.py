@@ -1,3 +1,4 @@
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
@@ -11,6 +12,7 @@ class Config(object):
     TESTING = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev'
     SCHEDULER_API_ENABLED = True
+    SCHEDULER_JOBSTORES = {'default': SQLAlchemyJobStore(url='sqlite:///job_scheduler.db')}
 
 
 class TestConfig(Config):
