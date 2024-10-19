@@ -41,9 +41,8 @@ def get_passenger_data():
         conf_number = data['conf_number']
         first_name = data['first_name']
         last_name = data['last_name']
-        current_app.logger.warning("A warning message.")
         # flight_date sent in format: MM/DD/YY
-        # flight_time sent in format: HH:MM:SS (seconds can be omitted)
+        # flight_time sent in format: HH:MM
         return create_job(flight_date, flight_time, conf_number, first_name, last_name)
 
     return {"error": "Request must be JSON"}, 415
