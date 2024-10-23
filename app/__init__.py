@@ -43,9 +43,8 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
         logger.setLevel(logging.INFO)
     elif app.debug or app.testing:
         logger.setLevel(logging.DEBUG)
-    # logger = logging.get_logger('apscheduler')
-    # logger.setLevel(logging.DEBUG)
-    # logging.getLogger("apscheduler").setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.DEBUG)
 
     return app
 
