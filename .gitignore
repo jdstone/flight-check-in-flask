@@ -1,5 +1,6 @@
 # Database
 app.db
+*.db
 flask_session/
 migrations/
 logs/
@@ -140,6 +141,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+bin/
+include/
+pyvenv.cfg
 
 # Spyder project settings
 .spyderproject
