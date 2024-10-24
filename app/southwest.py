@@ -1,11 +1,12 @@
 from flask import Blueprint, request, current_app
 from app import scheduler
-import requests, json
-
+import requests
+import json
 
 bp = Blueprint('southwest', __name__, url_prefix='/')
 
 
+## REMOVE THIS API ENDPOINT AND FUNCTION AFTER TESTING IS COMPLETED
 @bp.post("/checkin")
 def get_passenger_data():
     if request.is_json:
@@ -13,13 +14,17 @@ def get_passenger_data():
         conf_number = data['conf_number']
         first_name = data['first_name']
         last_name = data['last_name']
+        current_app.logger.debug(f"'conf_number': {conf_number}, 'first_name': {first_name}, 'last_name': {last_name}")
+
         return checkin_review(conf_number, first_name, last_name)
-    return {"error": "Request must be JSON"}, 415
+
+    return {"error": "Passenger request must be made in JSON"}, 415
 
 def checkin_review(conf_number, first_name, last_name):
     with scheduler.app.app_context():
-        sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review"
-        api_url = current_app.config['SW_REVIEW_API_URL'] or sw_url
+        # sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review"
+        # api_url = current_app.config['SW_REVIEW_API_URL'] or sw_url
+        api_url = current_app.config['SW_REVIEW_API_URL']
 
         request_review_data = {
             "confirmationNumber": conf_number,
@@ -49,17 +54,30 @@ def checkin_review(conf_number, first_name, last_name):
 
         response = requests.post(api_url, json=request_review_data, headers=review_headers)
         response_review_data = json.loads(response.text)
+        if 'data' not in response_review_data:
+            if str(response_review_data['code'])[:3] == "403":
+                current_app.logger.critical("FORBIDDEN response (HTTP 403) received from Southwest Confirm API")
+            else:
+                current_app.logger.critical(f"Southwest API response: {response_review_data['code']}")
+        else:
+            current_app.logger.info(f"A review check-in for {conf_number}, passenger {first_name} {last_name} has occurred.")
 
-        current_app.logger.info("A review checkin has occurred.")
+            return checkin_confirm(headers, response_review_data, conf_number, first_name, last_name)
 
-        return checkin_confirm(headers, response_review_data)
+    current_app.logger.critical("There was a problem with the scheduler app context")
+
+    return {"error": "Something went wrong"}
 
 
-def checkin_confirm(headers, response_review_data):
-    if response_review_data['data']['searchResults']['token']:
+def checkin_confirm(headers, response_review_data, conf_number, first_name, last_name):
+    if 'data' in response_review_data and \
+      'searchResults' in response_review_data['data'] and \
+      'token' in response_review_data['data']['searchResults']:
+
         with scheduler.app.app_context():
-            sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/confirmation"
-            api_url = current_app.config['SW_CONFIRM_API_URL'] or sw_url
+            # sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/confirmation"
+            # api_url = current_app.config['SW_CONFIRM_API_URL'] or sw_url
+            api_url = current_app.config['SW_CONFIRM_API_URL']
 
             request_confirm_data = {
                 "token": response_review_data['data']['searchResults']['token'],
@@ -78,7 +96,8 @@ def checkin_confirm(headers, response_review_data):
 
             response = requests.post(api_url, json=request_confirm_data, headers=confirm_headers)
             response_confirm_data = json.loads(response.content)
-            if response_confirm_data['success']:
+
+            if 'success' in response_confirm_data:
                 data = {
                         "flightBoardingGroup": response_confirm_data['data']['searchResults']['travelers'][0]['boardingBounds'][0]['boardingSegments'][0]['boardingGroup'],
                         "flightBoardingGroupPos": response_confirm_data['data']['searchResults']['travelers'][0]['boardingBounds'][0]['boardingSegments'][0]['boardingGroupPosition'],
@@ -86,10 +105,25 @@ def checkin_confirm(headers, response_review_data):
                         "lastName": response_confirm_data['data']['searchResults']['travelers'][0]['lastName'],
                         "confNumber": response_confirm_data['data']['searchResults']['confirmationNumber'],
                         "token": response_confirm_data['data']['searchResults']['token'],
-                    }
+                }
                 json_data = json.dumps(data, indent=4)
-                current_app.logger.info("A confirm checkin has occurred.")
+                current_app.logger.info(f"A confirm check-in for {conf_number}, passenger {first_name} {last_name} has occurred.")
+
                 return json_data
-            return {"error": "Check-in was not successful"}
-        return {"error": "Check-in was not successful"}, 404
+            else:
+                # if code '403050700' is received from Southwest confirm check-in
+                if str(response_confirm_data['code'])[:3] == "403":
+                    current_app.logger.critical("FORBIDDEN response (HTTP 403) received from Southwest Confirm API")
+                else:
+                    current_app.logger.critical(f"Southwest API response: {response_confirm_data['code']}")
+
+                return {"error": f"UNSUCCESSFUL check-in for {conf_number}, passenger {first_name} {last_name}"}, 404
+
+        current_app.logger.critical("There was a problem with the scheduler app context")
+
+        return {"error": "Something went wrong"}
+    else:
+        current_app.logger.critical(f"UNSUCCESSFUL confirm check-in for {conf_number}, passenger {first_name} {last_name}.")
+
+        return {"error": "Review response JSON object does not exist and passenger could not be checked in"}
 

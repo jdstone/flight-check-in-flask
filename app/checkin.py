@@ -1,8 +1,6 @@
 from app import scheduler
-# from app.extensions import scheduler
 from datetime import datetime, timedelta
 from flask import Blueprint, request, current_app
-import logging
 from app.southwest import checkin_review
 
 bp = Blueprint('checkin', __name__, url_prefix='/')
@@ -17,7 +15,6 @@ def get_passenger_data():
         conf_number = data['conf_number']
         first_name = data['first_name']
         last_name = data['last_name']
-        current_app.logger.debug(f"THIS DATA: {data}")
         # flight_date sent in format: MM/DD/YY
         # flight_time sent in format: HH:MM
         return create_job(flight_date, flight_time, conf_number, first_name, last_name)
@@ -36,13 +33,13 @@ def create_job(flight_date, flight_time, conf_number, first_name, last_name):
             trigger="date",
             run_date=run_time
         )
-        current_app.logger.info(f"Check-in scheduled for {conf_number}, {flight_date} at {flight_time}")
+        current_app.logger.info(f"Check-in scheduled for {conf_number}, {run_time}")
 
-        return {"scheduler.status": "Success"}
+        return {"scheduler.job_created": "Success"}
 
-    current_app.logger.error(f"Job already exists for job ID: {job_id}")
+    current_app.logger.error(f"Job id {job_id} already exists")
 
-    return {"error": f"{job_id} already exists"}
+    return {"shceduler.error": f"Job id {job_id} already exists"}
 
 def calculate_checkin_time(flight_date, flight_time):
     # concat date and time together

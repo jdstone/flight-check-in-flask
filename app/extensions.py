@@ -7,6 +7,3 @@ from flask_apscheduler.scheduler import BackgroundScheduler
 ###################################################
 scheduler = APScheduler(BackgroundScheduler())
 
-# scheduler = APScheduler(scheduler=BackgroundScheduler(daemon=False)) # another example of passing parameters
-# scheduler = APScheduler(BackgroundScheduler(jobstores=current_app.config['JOBSTORES']))
-
