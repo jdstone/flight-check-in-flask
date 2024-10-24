@@ -32,8 +32,8 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
     from . import southwest
     app.register_blueprint(southwest.bp)
     
-    from . import checkin
-    app.register_blueprint(checkin.bp)
+    from . import schedule
+    app.register_blueprint(schedule.bp)
 
     ###################################################
     #### Error Logging to File - For Production

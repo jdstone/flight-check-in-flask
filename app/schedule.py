@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, current_app
 from app.southwest import checkin_review
 
-bp = Blueprint('checkin', __name__, url_prefix='/')
+bp = Blueprint('schedule', __name__, url_prefix='/')
 
 
 @bp.post("/schedule-checkin")
