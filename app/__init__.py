@@ -1,8 +1,8 @@
+from app.extensions import scheduler
 from config import config
 from flask import Flask
-from flask_apscheduler import APScheduler
+import logging
 import os
-import requests
 
 
 def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
@@ -18,10 +18,33 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
         pass
 
     ###################################################
+    #### Initialize Extensions
+    ###################################################
+    scheduler.init_app(app)
+    try:
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit):
+        pass
+
+    ###################################################
     #### Register Blueprints
     ###################################################
     from . import southwest
     app.register_blueprint(southwest.bp)
+    
+    from . import schedule
+    app.register_blueprint(schedule.bp)
+
+    ###################################################
+    #### Error Logging to File - For Production
+    ###################################################
+    logger = logging.getLogger(__name__)
+    if not app.debug and not app.testing:
+        logger.setLevel(logging.INFO)
+    elif app.debug or app.testing:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.DEBUG)
 
     return app
 

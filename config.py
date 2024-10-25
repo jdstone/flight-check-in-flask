@@ -1,4 +1,4 @@
-from datetime import timedelta
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from dotenv import load_dotenv
 import os
 
@@ -11,6 +11,7 @@ class Config(object):
     TESTING = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev'
     SCHEDULER_API_ENABLED = True
+    SCHEDULER_JOBSTORES = {'default': SQLAlchemyJobStore(url='sqlite:///job_scheduler.db')}
 
 
 class TestConfig(Config):
@@ -30,6 +31,8 @@ class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    SW_REVIEW_API_URL = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review"
+    SW_CONFIRM_API_URL = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/confirmation"
 
 
 config = {
