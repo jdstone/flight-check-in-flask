@@ -35,6 +35,9 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
     from . import schedule
     app.register_blueprint(schedule.bp)
 
+    from .checkin import bp as checkin_bp
+    app.register_blueprint(checkin_bp, url_prefix='/')
+
     ###################################################
     #### Error Logging to File - For Production
     ###################################################
