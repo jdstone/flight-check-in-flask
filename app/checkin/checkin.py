@@ -1,4 +1,4 @@
-from flask import Blueprint, request, current_app, render_template
+from flask import request, render_template
 from app.schedule import create_job
 from app.checkin import bp
 from app.checkin.forms import CheckinForm
@@ -7,10 +7,8 @@ from app.checkin.forms import CheckinForm
 @bp.route("/", methods=['GET', 'POST'])
 def checkin():
     form = CheckinForm()
-    print("HERE1")
+
     if form.validate_on_submit():
-    # if request.method == 'POST':
-        print("HERE2")
         passenger_first_name = request.form['first_name']
         passenger_last_name = request.form['last_name']
         flight_conf_number = request.form['conf_num']

@@ -11,19 +11,45 @@
 <div id="checkin-form-container" class="tabcontent">
     <br>
     <form class="needs-validation" novalidate autocomplete="off" name="checkin" id="checkin" method="POST" action="/">
-        <input type="hidden" name="formFunction" id="formFunction" value="checkin">
         {{ form.csrf_token }}
         <div class="form-group">
             {{ form.first_name.label }}
             {{ form.first_name(class="form-control", placeholder="Enter first name")|safe }}
+            <div>
+              {% if form.first_name.errors %}
+                  <ul class="errors">
+                  {% for error in form.first_name.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+                  </ul>
+              {% endif %}
+            </div>
         </div>
         <div class="form-group">
             {{ form.last_name.label }}
             {{ form.last_name(class="form-control", placeholder="Enter last name")|safe }}
+            <div>
+              {% if form.last_name.errors %}
+                  <ul class="errors">
+                  {% for error in form.last_name.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+                  </ul>
+              {% endif %}
+            </div>
         </div>
         <div class="form-group">
             {{ form.conf_num.label }}
             {{ form.conf_num(class="form-control", placeholder="Enter confirmation number")|safe }}
+            <div>
+              {% if form.conf_num.errors %}
+                  <ul class="errors">
+                  {% for error in form.conf_num.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+                  </ul>
+              {% endif %}
+            </div>
         </div>
         <div class="form-group">
             <label for="formControlSelectAirline">Airline</label>
@@ -34,10 +60,28 @@
         <div class="form-group">
             {{ form.flight_time.label }}
             {{ form.flight_time(class="form-control")|safe }}
+            <div>
+              {% if form.flight_time.errors %}
+                  <ul class="errors">
+                  {% for error in form.flight_time.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+                  </ul>
+              {% endif %}
+            </div>
         </div>
         <div class="form-group">
             {{ form.flight_date.label }}
             {{ form.flight_date(class="form-control")|safe }}
+            <div>
+              {% if form.flight_date.errors %}
+                  <ul class="errors">
+                  {% for error in form.flight_date.errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+                  </ul>
+              {% endif %}
+            </div>
         </div>
         {{ form.submit(class="btn btn-primary")|safe }}
     </form>
