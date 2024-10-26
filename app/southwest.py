@@ -7,7 +7,7 @@ bp = Blueprint('southwest', __name__, url_prefix='/')
 
 
 ## REMOVE THIS API ENDPOINT AND FUNCTION AFTER TESTING IS COMPLETED
-@bp.post("/checkin")
+@bp.post("/swcheckin")
 def get_passenger_data():
     if request.is_json:
         data = request.get_json()
