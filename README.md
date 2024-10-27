@@ -12,7 +12,9 @@ The process is pretty much the same as it is with the PHP app described previous
 
 ### Improvements
 
-  - **Scheduler:** Previously, the app used crontab in Linux to process the passenger check-in to the flight. I was limited to only checking in on the minute and couldn't refine down to the granularity of seconds. Now I can. I use [APScheduler](https://github.com/agronholm/apscheduler/) to create a scheduled job that runs 23 hours, 59 minuets, and 55 seconds prior to your flight departure date/time. Example: if your flight is on 12/25/2024 at 7:45:00 am, the scheduled job is created and scheduled to run at 12/24/2024 7:45:05 am.
+  - **Scheduler:** Previously, the app used Cron in Linux to process the passenger check-in to the flight. Cron was limited to only checking in on the minute and couldn't refine down to the granularity of seconds. But now I can.
+  
+  I use [APScheduler](https://github.com/agronholm/apscheduler/) to create a scheduled job that runs 23 hours, 59 minuets, and 55 seconds prior to your flight departure date/time. Example: if your flight is on 12/25/2024 at 7:45:00 am, the scheduled job is created and scheduled to run at 12/24/2024 7:45:05 am.
 
 ### Something I learned
 
