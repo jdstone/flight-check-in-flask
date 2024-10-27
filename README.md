@@ -1,6 +1,6 @@
 # Automatic Flight Check-in
 
-:warning: ⚠ this software no longer functions and is available for a proof of concept only.
+:warning: This software no longer functions and is available for a proof of concept only.
 
 ## TL;DR
 
