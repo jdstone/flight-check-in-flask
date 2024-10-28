@@ -10,7 +10,7 @@
 
     <div id="checkin-form-container" class="tabcontent">
         <br>
-        <form class="needs-validation" novalidate autocomplete="off" method="POST">
+        <form class="needs-validation" novalidate autocomplete="off" method="POST" id="checkin-form">
             {{ form.csrf_token }}
             <div class="form-group">
                 {{ form.first_name.label }}
@@ -42,6 +42,27 @@
         </form>
     </div>
 
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}
@@ -49,5 +70,11 @@
 {% block extra_js %}
     <script src="{{ url_for('static', filename='assets/js/w3TabMenu.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/formValidation.js') }}"></script>
+    <script>
+        $('#checkin-form').on('submit', function(e){
+            $('#exampleModal').modal('show');
+            e.preventDefault();
+        });
+    </script>
 {% endblock extra_js %}
 

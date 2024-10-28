@@ -31,3 +31,6 @@ def checkin():
             return create_job(flight_date, flight_time, flight_conf_number, passenger_first_name, passenger_last_name)
     return render_template('checkin/checkin.html.j2', form=form)
 
+def checkin_confirmation():
+    pass
+
