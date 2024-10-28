@@ -6,12 +6,10 @@ import os
 
 
 def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_object(config[config_class])
 
-    # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
@@ -30,10 +28,10 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
     #### Register Blueprints
     ###################################################
     from . import southwest
-    app.register_blueprint(southwest.bp)
+    app.register_blueprint(southwest.bp, url_prefix='/sw')
     
     from . import schedule
-    app.register_blueprint(schedule.bp)
+    app.register_blueprint(schedule.bp, url_prefix='/schedule')
 
     from .checkin import bp as checkin_bp
     app.register_blueprint(checkin_bp, url_prefix='/')

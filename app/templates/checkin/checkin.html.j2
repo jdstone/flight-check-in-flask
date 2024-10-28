@@ -5,12 +5,12 @@
 
 <div class="container">
     <div class="w3-bar w3-border-top w3-border-bottom w3-border-left w3-border-right w3-light-grey">
-        <button class="w3-bar-item w3-button tablinks" onclick="openForm(event,'checkin-form-container')" id="defaultOpen">Schedule Flight Check-in</button>
+        <button class="w3-bar-item w3-button tablinks" onclick="openForm(event,'checkinFormContainer')" id="defaultOpen">Schedule Flight Check-in</button>
     </div>
 
-    <div id="checkin-form-container" class="tabcontent">
+    <div id="checkinFormContainer" class="tabcontent">
         <br>
-        <form class="needs-validation" novalidate autocomplete="off" method="POST">
+        <form class="needs-validation" novalidate autocomplete="off" method="POST" id="checkinForm">
             {{ form.csrf_token }}
             <div class="form-group">
                 {{ form.first_name.label }}
