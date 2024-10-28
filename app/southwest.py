@@ -6,7 +6,6 @@ import requests
 bp = Blueprint('southwest', __name__)
 
 
-## REMOVE THIS API ENDPOINT AND FUNCTION AFTER TESTING IS COMPLETED
 @bp.post("/checkin/")
 def get_passenger_data():
     if request.is_json:
