@@ -1,7 +1,7 @@
-from flask import request, render_template
-from app.schedule import create_job
 from app.checkin import bp
 from app.checkin.forms import CheckinForm
+from app.schedule import create_job
+from flask import request, render_template
 
 
 @bp.route("/", methods=['GET', 'POST'])
@@ -29,5 +29,8 @@ def checkin():
 
         if error is None:
             return create_job(flight_date, flight_time, flight_conf_number, passenger_first_name, passenger_last_name)
+        else:
+            return error
+
     return render_template('checkin/checkin.html.j2', form=form)
 

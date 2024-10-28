@@ -1,13 +1,13 @@
-from flask import Blueprint, request, current_app
 from app import scheduler
-import requests
+from flask import Blueprint, request, current_app
 import json
+import requests
 
-bp = Blueprint('southwest', __name__, url_prefix='/')
+bp = Blueprint('southwest', __name__)
 
 
 ## REMOVE THIS API ENDPOINT AND FUNCTION AFTER TESTING IS COMPLETED
-@bp.post("/swcheckin")
+@bp.post("/checkin/")
 def get_passenger_data():
     if request.is_json:
         data = request.get_json()
@@ -20,10 +20,9 @@ def get_passenger_data():
 
     return {"error": "Passenger request must be made in JSON"}, 415
 
+
 def checkin_review(conf_number, first_name, last_name):
     with scheduler.app.app_context():
-        # sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/review"
-        # api_url = current_app.config['SW_REVIEW_API_URL'] or sw_url
         api_url = current_app.config['SW_REVIEW_API_URL']
 
         request_review_data = {
@@ -55,8 +54,9 @@ def checkin_review(conf_number, first_name, last_name):
         response = requests.post(api_url, json=request_review_data, headers=review_headers)
         response_review_data = json.loads(response.text)
         if 'data' not in response_review_data:
+            # if code '403050700' is received from Southwest review check-in
             if str(response_review_data['code'])[:3] == "403":
-                current_app.logger.critical("FORBIDDEN response (HTTP 403) received from Southwest Confirm API")
+                current_app.logger.critical("FORBIDDEN response (HTTP 403) received from Southwest Review API")
             else:
                 current_app.logger.critical(f"Southwest API response: {response_review_data['code']}")
         else:
@@ -75,8 +75,6 @@ def checkin_confirm(headers, response_review_data, conf_number, first_name, last
       'token' in response_review_data['data']['searchResults']:
 
         with scheduler.app.app_context():
-            # sw_url = "https://www.southwest.com/api/air-checkin/v1/air-checkin/page/air/check-in/confirmation"
-            # api_url = current_app.config['SW_CONFIRM_API_URL'] or sw_url
             api_url = current_app.config['SW_CONFIRM_API_URL']
 
             request_confirm_data = {
