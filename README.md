@@ -4,7 +4,7 @@
 
 ## TL;DR
 
-I rewrote my [automatic flight check-in](https://github.com/jdstone/flight-check-in) web app (originally written in PHP). This was purely an exercise to learn Python and Flask because the API that this and the PHP version utilizes is no longer publicly available; the software can no longer actually check you in because of this.
+I rewrote my [automatic flight check-in](https://github.com/jdstone/flight-check-in) web app (originally written in PHP). This was purely an exercise to learn Python and Flask because the API that this and the PHP version utilizes is no longer publicly available. Because of this, the software can no longer successfully check a passenger in.
 
 Basically, the user enters their passenger and flight details (date and time), and the app will create a scheduled job that runs at exactly 23 hours, 59 minutes, and 55 seconds before the actual flight departs, which subsequently checks in the passenger to their [Southwest] flight.
 
