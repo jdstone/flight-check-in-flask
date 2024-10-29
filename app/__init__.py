@@ -37,7 +37,7 @@ def create_app(config_class=os.getenv('FLASK_ENV') or 'default'):
     app.register_blueprint(checkin_bp, url_prefix='/')
 
     ###################################################
-    #### Error Logging to File - For Production
+    #### Error Logging
     ###################################################
     logger = logging.getLogger(__name__)
     if not app.debug and not app.testing:
