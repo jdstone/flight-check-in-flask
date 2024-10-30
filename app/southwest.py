@@ -98,9 +98,9 @@ def checkin_confirm(headers, response_review_data, conf_number, first_name, last
                 data = {
                         "flightBoardingGroup": response_confirm_data['data']['searchResults']['travelers'][0]['boardingBounds'][0]['boardingSegments'][0]['boardingGroup'],
                         "flightBoardingGroupPos": response_confirm_data['data']['searchResults']['travelers'][0]['boardingBounds'][0]['boardingSegments'][0]['boardingGroupPosition'],
-                        "firstName": response_confirm_data['data']['searchResults']['travelers'][0]['firstName'],
-                        "lastName": response_confirm_data['data']['searchResults']['travelers'][0]['lastName'],
-                        "confNumber": response_confirm_data['data']['searchResults']['confirmationNumber'],
+                        "firstName": first_name,
+                        "lastName": last_name,
+                        "confNumber": conf_number,
                         "token": response_confirm_data['data']['searchResults']['token'],
                 }
                 json_data = json.dumps(data, indent=4)
