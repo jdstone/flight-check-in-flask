@@ -1,7 +1,7 @@
 from app.checkin import bp
 from app.checkin.forms import CheckinForm
 from app.schedule import create_job
-from flask import request, render_template
+from flask import render_template, request
 
 
 @bp.route("/", methods=['GET', 'POST'])

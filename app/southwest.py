@@ -1,5 +1,5 @@
 from app import scheduler
-from flask import Blueprint, request, current_app, jsonify
+from flask import Blueprint, current_app, jsonify, request
 import requests
 
 bp = Blueprint('southwest', __name__)
