@@ -22,7 +22,7 @@ The process is pretty much the same as it is with the PHP app described previous
 
 ### Something I learned
 
-  - Some of the header information I send with the API request is probably not required. It was sent with the original request when checking in through Southwest.com, so at the time I just assumed the information was required.
+  - Some of the header information I send with the API request is probably not required. It was sent with the original request when checking in through Southwest.com, so at the time I just assumed the information was required. But I have no way to verify this since Southwest's API is no longer public.
 
 ## Usage/Installation
 
