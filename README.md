@@ -29,18 +29,25 @@ The process is pretty much the same as it is with the PHP app described previous
 1. Clone this repository
 2. `cd flight-check-in`
 3. `python3 -m venv .`
-4. `pip install -r requirements.txt`
-5. `flask run`
+4. `source bin/activate`
+5. `pip install -r requirements.txt`
+6. `flask run`
 
 ### API endpoints
 
 * /sw/checkin
 
   Perform a check-in directly with Southwest and bypass using the frontend.
-  `curl --header "Content-Type: application/json" --request POST --data '{"conf_number":"W89156","first_name":"Johnny","last_name":"Appleseed"}' http://127.0.0.1:5000/sw/checkin/`
+
+  ```shell
+  curl --header "Content-Type: application/json" --request POST --data '{"conf_number":"W89156","first_name":"Johnny","last_name":"Appleseed"}' http://127.0.0.1:5000/sw/checkin/
+  ```
 
 * /schedule/checkin
 
   Schedule a check-in with the scheduler, and the scheduler will run the check-in job 23 hours, 59 minutes, and 55 seconds prior to flight departure date/time (for example below, job will run at 13:37:05 on 12/1/2024)
-  `curl --header "Content-Type: application/json" --request POST --data '{"first_name":"Johnny","last_name":"Appleseed","conf_number":"W89156","flight_date":"2025-12-01","flight_time":"13:37"}' http://127.0.0.1:5000/schedule/checkin/`
+
+  ```shell
+  curl --header "Content-Type: application/json" --request POST --data '{"first_name":"Johnny","last_name":"Appleseed","conf_number":"W89156","flight_date":"2025-12-01","flight_time":"13:37"}' http://127.0.0.1:5000/schedule/checkin/
+  ```
 
