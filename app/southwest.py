@@ -1,6 +1,5 @@
 from app import scheduler
-from flask import Blueprint, request, current_app
-import json
+from flask import Blueprint, request, current_app, jsonify
 import requests
 
 bp = Blueprint('southwest', __name__)
@@ -51,29 +50,22 @@ def checkin_review(conf_number, first_name, last_name):
         review_headers = {**headers, **review_headers}
 
         response = requests.post(api_url, json=request_review_data, headers=review_headers)
-        response_review_data = json.loads(response.text)
+        response_review_data = current_app.json.loads(response.text)
         if 'data' not in response_review_data:
-            # if code '403050700' is received from Southwest review check-in
-            if str(response_review_data['code'])[:3] == "403":
-                current_app.logger.critical("FORBIDDEN response (HTTP 403) received from Southwest Review API")
-            else:
+            if 'code' in response_review_data:
                 current_app.logger.critical(f"Southwest API response: {response_review_data['code']}")
         else:
             current_app.logger.info(f"A review check-in for {conf_number}, passenger {first_name} {last_name} has occurred.")
 
             return checkin_confirm(headers, response_review_data, conf_number, first_name, last_name)
 
-    current_app.logger.critical("There was a problem with the scheduler app context")
-
-    return {"error": "Something went wrong"}
-
 
 def checkin_confirm(headers, response_review_data, conf_number, first_name, last_name):
-    if 'data' in response_review_data and \
-      'searchResults' in response_review_data['data'] and \
-      'token' in response_review_data['data']['searchResults']:
+    with scheduler.app.app_context():
+        if 'data' in response_review_data and \
+        'searchResults' in response_review_data['data'] and \
+        'token' in response_review_data['data']['searchResults']:
 
-        with scheduler.app.app_context():
             api_url = current_app.config['SW_CONFIRM_API_URL']
 
             request_confirm_data = {
@@ -92,7 +84,7 @@ def checkin_confirm(headers, response_review_data, conf_number, first_name, last
             confirm_headers = {**headers, **confirm_headers}
 
             response = requests.post(api_url, json=request_confirm_data, headers=confirm_headers)
-            response_confirm_data = json.loads(response.content)
+            response_confirm_data = current_app.json.loads(response.content)
 
             if 'success' in response_confirm_data:
                 data = {
@@ -103,24 +95,17 @@ def checkin_confirm(headers, response_review_data, conf_number, first_name, last
                         "confNumber": conf_number,
                         "token": response_confirm_data['data']['searchResults']['token'],
                 }
-                json_data = json.dumps(data, indent=4)
+                json_data = jsonify(data)
                 current_app.logger.info(f"A confirm check-in for {conf_number}, passenger {first_name} {last_name} has occurred.")
 
                 return json_data
             else:
-                # if code '403050700' is received from Southwest confirm check-in
-                if str(response_confirm_data['code'])[:3] == "403":
-                    current_app.logger.critical("FORBIDDEN response (HTTP 403) received from Southwest Confirm API")
-                else:
+                if 'code' in response_confirm_data:
                     current_app.logger.critical(f"Southwest API response: {response_confirm_data['code']}")
 
-                return {"error": f"UNSUCCESSFUL check-in for {conf_number}, passenger {first_name} {last_name}"}, 404
+                return jsonify({"error": f"UNSUCCESSFUL check-in for {conf_number}, passenger {first_name} {last_name}"}), 404
+        else:
+            current_app.logger.critical(f"UNSUCCESSFUL confirm check-in for {conf_number}, passenger {first_name} {last_name}.")
 
-        current_app.logger.critical("There was a problem with the scheduler app context")
-
-        return {"error": "Something went wrong"}
-    else:
-        current_app.logger.critical(f"UNSUCCESSFUL confirm check-in for {conf_number}, passenger {first_name} {last_name}.")
-
-        return {"error": "Review response JSON object does not exist and passenger could not be checked in"}
+            return jsonify({"error": "Review response JSON object does not exist and passenger could not be checked in"})
 
