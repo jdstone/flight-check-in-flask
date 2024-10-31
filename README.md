@@ -1,6 +1,8 @@
 # Automatic Flight Check-in
 
-:warning: This software no longer functions for its intended use and is available for a proof of concept only.
+:warning: ~~This software no longer functions for its intended use and is available for a proof of concept only.~~
+
+Although this app no longers functions for its intended use, you can still see how it works by using the accompanying [test suite](https://github.com/jdstone/flight-check-in-test-suite). See readme instructions there on how to set this up.
 
 ## TL;DR
 
@@ -20,5 +22,32 @@ The process is pretty much the same as it is with the PHP app described previous
 
 ### Something I learned
 
-  - Some of the header information I send with the API request is probably not required. It was sent with the original request when checking in through Southwest.com, so at the time I just assumed the information was required.
+  - Some of the header information I send with the API request is probably not required. It was sent with the original request when checking in through Southwest.com, so at the time I just assumed the information was required. But I have no way to verify this since Southwest's API is no longer public.
+
+## Usage/Installation
+
+1. Clone this repository
+2. `cd flight-check-in`
+3. `python3 -m venv .`
+4. `source bin/activate`
+5. `pip install -r requirements.txt`
+6. `flask run`
+
+### API endpoints
+
+* /sw/checkin
+
+  Perform a check-in directly with Southwest and bypass using the frontend.
+
+  ```shell
+  curl --header "Content-Type: application/json" --request POST --data '{"conf_number":"W89156","first_name":"Johnny","last_name":"Appleseed"}' http://127.0.0.1:5000/sw/checkin/
+  ```
+
+* /schedule/checkin
+
+  Schedule a check-in with the scheduler, and the scheduler will run the check-in job 23 hours, 59 minutes, and 55 seconds prior to flight departure date/time (for example below, job will run at 13:37:05 on 12/1/2024)
+
+  ```shell
+  curl --header "Content-Type: application/json" --request POST --data '{"first_name":"Johnny","last_name":"Appleseed","conf_number":"W89156","flight_date":"2025-12-01","flight_time":"13:37"}' http://127.0.0.1:5000/schedule/checkin/
+  ```
 
