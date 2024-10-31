@@ -1,7 +1,7 @@
 from app import scheduler
 from app.southwest import checkin_review
 from datetime import datetime, timedelta
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, jsonify
 
 bp = Blueprint('schedule', __name__)
 
@@ -19,7 +19,7 @@ def get_passenger_data():
         # flight_time sent in format: HH:MM
         return create_job(flight_date, flight_time, conf_number, first_name, last_name)
 
-    return {"get_passenger.error": "Request must be JSON"}, 415
+    return jsonify({"get_passenger.error": "Request must be JSON"}), 415
 
 
 def calculate_checkin_time(flight_date, flight_time):
@@ -46,9 +46,9 @@ def create_job(flight_date, flight_time, conf_number, first_name, last_name):
         )
         current_app.logger.info(f"Check-in scheduled for {conf_number}, {run_time}")
 
-        return {"scheduler.job_created": "Success"}
+        return jsonify({"scheduler.job_created": "Success"})
 
     current_app.logger.error(f"Job id {job_id} already exists")
 
-    return {"shceduler.error": f"Job id {job_id} already exists"}
+    return jsonify({"scheduler.error": f"Job id {job_id} already exists"})
 

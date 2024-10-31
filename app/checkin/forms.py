@@ -1,7 +1,6 @@
-from flask import flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, DateField, TimeField
-from wtforms.validators import Length, DataRequired
+from wtforms import DateField, StringField, SubmitField, TimeField
+from wtforms.validators import DataRequired, Length
 
 class CheckinForm(FlaskForm):
     first_name     = StringField('First Name', [Length(min=1, max=25), DataRequired()])
