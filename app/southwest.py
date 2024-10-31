@@ -50,7 +50,8 @@ def checkin_review(conf_number, first_name, last_name):
         review_headers = {**headers, **review_headers}
 
         response = requests.post(api_url, json=request_review_data, headers=review_headers)
-        response_review_data = current_app.json.loads(response.text)
+        response_review_data = current_app.json.loads(response.content)
+
         if 'data' not in response_review_data:
             if 'code' in response_review_data:
                 current_app.logger.critical(f"Southwest API response: {response_review_data['code']}")
