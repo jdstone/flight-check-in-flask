@@ -5,6 +5,7 @@ import requests
 bp = Blueprint('southwest', __name__)
 
 
+# route /sw/checkin/
 @bp.post("/checkin/")
 def get_passenger_data():
     if request.is_json:

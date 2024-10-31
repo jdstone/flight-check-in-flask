@@ -6,6 +6,7 @@ from flask import Blueprint, request, current_app, jsonify
 bp = Blueprint('schedule', __name__)
 
 
+# route /schedule/checkin/
 @bp.post("/checkin/")
 def get_passenger_data():
     if request.is_json:
