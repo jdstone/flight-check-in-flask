@@ -35,7 +35,7 @@ The process is pretty much the same as it is with the PHP app described previous
 
 ### API endpoints
 
-* /sw/checkin
+* /sw/checkin/
 
   Perform a check-in directly with Southwest and bypass using the frontend.
 
@@ -43,7 +43,7 @@ The process is pretty much the same as it is with the PHP app described previous
   curl --header "Content-Type: application/json" --request POST --data '{"conf_number":"W89156","first_name":"Johnny","last_name":"Appleseed"}' http://127.0.0.1:5000/sw/checkin/
   ```
 
-* /schedule/checkin
+* /schedule/checkin/
 
   Schedule a check-in with the scheduler, and the scheduler will run the check-in job 23 hours, 59 minutes, and 55 seconds prior to flight departure date/time (for example below, job will run at 13:37:05 on 12/1/2024)
 
