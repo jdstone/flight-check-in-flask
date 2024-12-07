@@ -15,3 +15,4 @@ RUN pip3 install -r requirements.txt &&\
 
 ENTRYPOINT ["gunicorn"]
 CMD ["--config", "gunicorn_config.py", "app:create_app()"]
+
