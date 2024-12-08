@@ -1,0 +1,14 @@
+# .dockerignore
+
+## Ignore everything
+*
+
+## Allow the following
+!app/**/*
+!config.py
+!gunicorn_config.py
+!requirements.txt
+!VERSION
+
+## Ignore __pycache__
+**/__pycache__/
